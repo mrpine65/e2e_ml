@@ -8,6 +8,7 @@ dependencies = [
     "awscli>=1.42.45",
     "boto3>=1.40.45",
     "catboost>=1.2.8",
+    "evidently>=0.7.15",
     "kaggle>=1.7.4.5",
     "lightgbm>=4.6.0",
     "loguru>=0.7.3",

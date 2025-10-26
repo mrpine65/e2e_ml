@@ -4,11 +4,13 @@ Stores a model serve clas that will be used to make predictions with traned mode
 
 import mlflow
 import numpy as np
+import pandas as pd
 from loguru import logger
 
 from ..config.aws import aws_credentials
 from ..config.settings import general_settings
-from ..data.util import load_features
+from ..data.utils import load_features
+from ..data.processing import data_processing_inference
 from ..config.model import model_settings
 
 logger.info(f"Loading 'label_encoder' (instance of LabelBinarizer) from path {general_settings.ARTIFACTS_PATH}.")
@@ -71,19 +73,21 @@ class ModelServe:
             raise NotImplementedError()
 
     def predict(
-        self, features: np.ndarray, transform_to_str: bool = True
+        self, payload: dict, transform_to_str: bool = True
     ) -> np.ndarray:
         """Uses the trained model to make a prediction on a given feature array.
 
         Args:
-            features (np.ndarray): the features array.
+            payload (dict): dict
             transform_to_str (bool): whether to transform the prediction integer to
                 string or not. Defaults to True.
 
         Returns:
             np.ndarray: the predictions array.
         """
-        prediction = self.model.predict(features)
+        df = pd.DataFrame([payload])
+        X = data_processing_inference(df)
+        prediction = self.model.predict(X)
 
         if transform_to_str:
             num_classes = len(model_settings.CLASSES)

@@ -1,2 +1,5 @@
 step.txt
 src/config
+
+__pycache__/
+*.pyc
