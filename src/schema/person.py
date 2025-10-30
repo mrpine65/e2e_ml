@@ -38,6 +38,9 @@ class Person(BaseModel):
     CAEC: Literal["Frequently", "Sometimes", "Always", "no"] = Field(
         description="The person's consumption of food between meals (CAEC).",
     )
+    SMOKE: Literal["yes", "no"] = Field(
+        description="Whether the person smokes (SMOKE)."
+    )
     SCC: Literal["yes", "no"] = Field(
         description="Whether the person monitors their calorie consumption (SCC)."
     )
@@ -46,21 +49,22 @@ class Person(BaseModel):
         "json_schema_extra": {
             "examples": [
                 {
-                    "Age": 24.443011,
-                    "Height": 1.699998,
-                    "Weight": 81.66995,
-                    "Gender": "Male",
+                    "Gender": "Female",
+                    "Age": 18.0,
+                    "Height": 1.56,
+                    "Weight": 57.0,
                     "family_history_with_overweight": "yes",
-                    "CALC": "Sometimes",
-                    "MTRANS": "Public_Transportation",
                     "FAVC": "yes",
-                    "FCVC": 2,
-                    "NCP": 2.98,
-                    "CH2O": 2.76,
-                    "FAF": 0,
-                    "TUE": 1,
-                    "CAEC": "Sometimes",
+                    "FCVC": 2.0,
+                    "NCP": 3.0,
+                    "CAEC": "Frequently",
+                    "SMOKE": "no",
+                    "CH2O": 2.0,
                     "SCC": "no",
+                    "FAF": 1.0,
+                    "TUE": 1.0,
+                    "CALC": "no",
+                    "MTRANS": "Automobile",
                 }
             ]
         }

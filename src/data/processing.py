@@ -70,7 +70,6 @@ def data_processing_inference(dataframe: pd.DataFrame) -> pd.DataFrame:
     return dataframe
 
 
-
 def _change_height_units(dataframe: pd.DataFrame) -> pd.DataFrame:
     logger.info("Changing the height units to centimeters.")
     dataframe = dataframe.copy()
@@ -106,6 +105,7 @@ def _transform_numerical_columns(dataframe: pd.DataFrame) -> pd.DataFrame:
 def _categorize_numerical_columns(dataframe: pd.DataFrame, bins: np.ndarray) -> pd.DataFrame:
     dataframe = dataframe.copy()
     logger.info("Categorizing the 'Age' column into discrete categories.")
+    dataframe['Age'] = dataframe['Age'].astype(object)
     dataframe.loc[:, 'Age'] = pd.cut(
         x=dataframe['Age'],
         bins=bins,
@@ -127,16 +127,16 @@ def _scales_numerical_columns(dataframe: pd.DataFrame, scalers: Dict[str, Standa
 
 def _encode_categorical_columns(dataframe: pd.DataFrame, encoder: OneHotEncoder) -> pd.DataFrame:
     dataframe = dataframe.copy()
-    categorical_columns = dataframe.select_dtypes(include=['object', 'category']).columns.to_list()
+    # categorical_columns = dataframe.select_dtypes(include=['object', 'category']).columns.to_list()
+    categorical_columns = encoder.feature_names_in_
     logger.info(f"Encoding the {categorical_columns} columns.")
 
     encoded = pd.DataFrame(
         data=encoder.transform(dataframe[categorical_columns]),
-        columns=encoder.get_feature_names_out(categorical_columns),
-        index=dataframe.index
+        columns=encoder.get_feature_names_out(categorical_columns)
     )
 
-    dataframe = pd.concat([dataframe.drop(columns=categorical_columns), encoded], axis=1)
+    dataframe = pd.concat([dataframe.dcrop(columns=categorical_columns), encoded], axis=1)
     return dataframe
 
 
@@ -144,7 +144,7 @@ def _drop_features(dataframe: pd.DataFrame, features: List) -> pd.DataFrame:
 
     logger.info(f"drop fratures {features}")
     dataframe = dataframe.copy()
-    return dataframe.drop(columns=features, axis=1).reset_index(drop=True)
+    return dataframe.drop(columns=features, axis=1, errors='ignore').reset_index(drop=True)
 
 
 def load_dataset(path: pathlib.Path, from_aws: bool) -> pd.DataFrame:
@@ -168,8 +168,8 @@ def load_dataset(path: pathlib.Path, from_aws: bool) -> pd.DataFrame:
 
 
 # Debug/demo usage
-from pprint import pprint
-from pathlib import Path
+# from pprint import pprint
+# from pathlib import Path
 
-df = load_dataset(Path.joinpath(general_settings.DATA_PATH, general_settings.RAW_FILE_NAME), from_aws=False)
-pprint(data_processing_inference(df.head(10)))
+# df = load_dataset(Path.joinpath(general_settings.DATA_PATH, general_settings.RAW_FILE_NAME), from_aws=False)
+# pprint(data_processing_inference(df.head(10)))

@@ -19,7 +19,7 @@ label_encoder = load_features(
     features_name='label_encoder'
 )
 
-if aws_credentials.EC2 != "YOUR_EC2_INSTANCE_URL":
+if aws_credentials.EC2_URL != "YOUR_EC2_INSTANCE_URL":
     mlflow.set_tracking_uri(f"http://{aws_credentials.EC2_URL}:5000")
 else:
     mlflow.set_tracking_uri("http://mlflow:5000")
@@ -73,26 +73,22 @@ class ModelServe:
             raise NotImplementedError()
 
     def predict(
-        self, payload: dict, transform_to_str: bool = True
+        self, features: pd.DataFrame, transform_to_str: bool = True
     ) -> np.ndarray:
         """Uses the trained model to make a prediction on a given feature array.
 
         Args:
-            payload (dict): dict
+            features (pd.Dataframe): the dataframe
             transform_to_str (bool): whether to transform the prediction integer to
                 string or not. Defaults to True.
 
         Returns:
             np.ndarray: the predictions array.
         """
-        df = pd.DataFrame([payload])
-        X = data_processing_inference(df)
-        prediction = self.model.predict(X)
+        prediction = self.model.predict(features)
 
         if transform_to_str:
-            num_classes = len(model_settings.CLASSES)
-            one_hot = np.eye(num_classes)[prediction.astype(int)]
-            prediction = label_encoder.inverse_transform(one_hot)
+            prediction = label_encoder.classes_[prediction]
 
         logger.info(f"Prediction: {prediction}.")
         return prediction

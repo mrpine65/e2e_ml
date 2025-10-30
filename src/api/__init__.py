@@ -16,7 +16,7 @@ from ..model.inference import ModelServe
 use_aws = bool(aws_credentials.S3 != "YOUR_S3_BUCKET_URL")
 
 if aws_credentials.EC2_URL != "YOUR_EC2_INSTANCE_URL":
-    mlflow.set_tracking_uri(f"http://{aws_credentials.EC2}:5000")
+    mlflow.set_tracking_uri(f"http://{aws_credentials.EC2_URL}:5000")
 else:
     mlflow.set_tracking_uri("http://mlflow:5000")
 
@@ -35,7 +35,7 @@ if not Path.exists(
 
 logger.info(f"Loading the {general_settings.CURRENT_FILE_NAME} dataset.")
 current_dataset = load_dataset(
-    path=Path.joinpath(general_settings.DATA_PATH, general_settings.CURRENT_FILE_NAME),
+    path=Path.joinpath(general_settings.DATA_PATH, general_settings.RAW_FILE_NAME),
     from_aws=use_aws,
 )
 
