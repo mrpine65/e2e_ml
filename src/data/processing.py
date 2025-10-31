@@ -136,7 +136,7 @@ def _encode_categorical_columns(dataframe: pd.DataFrame, encoder: OneHotEncoder)
         columns=encoder.get_feature_names_out(categorical_columns)
     )
 
-    dataframe = pd.concat([dataframe.dcrop(columns=categorical_columns), encoded], axis=1)
+    dataframe = pd.concat([dataframe.drop(columns=categorical_columns), encoded], axis=1)
     return dataframe
 
 

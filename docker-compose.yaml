@@ -1,0 +1,73 @@
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: ./notebooks/Dockerfile.dev
+
+    depends_on:
+      - mlflow
+
+    command: ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--NotebookApp.token=''"]
+
+    ports:
+      - "8888:8888"
+
+    volumes:
+      - ./src/config/:/e2e_ml/src/config/
+      - ./models:/e2e_ml/models/
+      - ./data:/e2e_ml/data/
+
+  mlflow:
+    build:
+      context: .
+      dockerfile: ./notebooks/Dockerfile.dev
+    command: ["mlflow", "server", "-h", "0.0.0.0", "-p", "5000"]
+
+    ports:
+      - "5000:5000"
+
+    volumes:
+      - ./src/config/:/e2e_ml/src/config/
+      - ./models:/e2e_ml/models/
+      - ./data:/e2e_ml/data/
+
+  prod:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+
+    working_dir: /e2e_ml
+
+    depends_on:
+      - mlflow
+    
+    command: ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - ./models:/e2e_ml/models/
+      - ./data:/e2e_ml/data/
+      - ./reports:/e2e_ml/reports/
+      - ./notebooks/VERSION:/e2e_ml/notebooks/VERSION
+
+  # test:
+  #   build:
+  #     context: .
+  #     dockerfile: ./Dockerfile
+
+  #   working_dir: /e2e_ml
+
+  #   depends_on:
+  #     - mlflow
+  #     - prod
+
+  #   command: ["pytest", "--cov-report", "html:reports/cov_html", "--cov=.", "./tests/", "--disable-warnings"]
+
+  #   volumes:
+  #     - ./models:/e2e_ml/models/
+  #     - ./data:/e2e_ml/data/
+  #     - ./tests:/e2e_ml/tests/
+  #     - ./reports:/e2e_ml/reports/
+  #     - ./notebooks/VERSION:/e2e_ml/notebooks/VERSION
