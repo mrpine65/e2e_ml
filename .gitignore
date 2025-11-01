@@ -1,5 +1,6 @@
 step.txt
-src/config
+src/config/credentials.yaml
 
 __pycache__/
 *.pyc
+
