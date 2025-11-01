@@ -33,10 +33,11 @@ jobs:
         EC2_URL: ${{ secrets.EC2_URL }}
         EOF
 
-    - name: Install Python dependencies
+    - name: Install dependencies and run commands with uv
       run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install uv
+        uv sync
+        source .venv/bin/activate
 
     - name: Run server (background)
       run: |
