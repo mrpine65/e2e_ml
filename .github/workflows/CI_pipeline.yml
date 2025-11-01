@@ -45,4 +45,19 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest --cov-report html:reports/cov_html --cov=. tests/ --disable-warnings
+        pytest --cov-report hthowml:reports/cov_html --cov=. tests/ --disable-warnings
+
+    - name: Login to docker registry
+      uses: docker/login-action@v3.6.0
+      with:
+        Username: ${{secrets.DOCKER_USERNAME}}
+        Password: ${{secrets.DOCKER_PASSWORD}}
+
+    - name: Build and push docker image
+      uses: docker/build-push-action@v6.18.0
+      with:
+        context: .
+        file: Dockerfile # path to docker file
+        push: True
+        tags: thong038202008963/my-ml-model:latest
+        
