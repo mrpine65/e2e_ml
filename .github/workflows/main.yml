@@ -1,0 +1,32 @@
+name: Machine Learning Training Workflow
+
+on:
+  # Trigger when the previous workflow (CI) has finished
+  workflow_run:
+    workflows: ["Machine Learning CI Pipeline"]
+    types:
+      - completed
+
+  # Trigger daily at 12 AM
+  schedule:
+    - cron: "0 0 * * *"
+  
+  # Manual execution trigger
+  workflow_dispatch:
+  
+  # Webhook trigger from a monitoring tool
+  # monitoring_webhook:
+  #   types:
+  #     - webhook
+
+jobs:
+  ml-training:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out source code
+      uses: actions/checkout@v5.0.0
+
+    - name: Trigger model training
+      run : |
+        docker build -f Dockerfile.train -t e2e-ml-train .
