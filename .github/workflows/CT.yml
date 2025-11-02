@@ -40,6 +40,12 @@ jobs:
         EC2_URL: ${{ secrets.EC2_URL }}
         EOF
 
+    - name: Install dependencies and run commands with uv
+      run: |
+        pip install uv
+        uv sync
+        echo "$PWD/.venv/bin" >> $GITHUB_PATH
+
     - name: train machine leaning model
       run: python -m src.train_script.py
 
