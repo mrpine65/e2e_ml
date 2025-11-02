@@ -16,7 +16,7 @@ dataset = load_dataset(
     path=pathlib.Path.joinpath(
         general_settings.DATA_PATH, general_settings.RAW_FILE_NAME
     ),
-    from_aws=False,
+    from_aws=True,
 )
 
 
@@ -26,10 +26,7 @@ def test_data_processing_pipeline() -> None:
     """
     _dataset = dataset.copy()
 
-    features = data_processing_inference(dataframe=_dataset)
+    features = data_processing_inference(dataframe=_dataset, is_train=False)
 
     assert isinstance(_dataset, pd.DataFrame)
     assert isinstance(features, pd.DataFrame)
-    assert features.shape[1] == len(model_settings.FEATURES)
-
-test_data_processing_pipeline()

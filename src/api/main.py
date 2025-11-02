@@ -23,7 +23,7 @@ from ..config.settings import general_settings
 from ..schema.person import Person
 from ..schema.monitoring import Monitoring
 from ..data.processing import data_processing_inference
-from . import current_dataset, loaded_model
+from . import current_dataset,reference_dataset ,loaded_model
 
 app = FastAPI()
 
@@ -43,6 +43,12 @@ def monitor_model_performance(monitoring: Monitoring = Depends()) -> FileRespons
     current_data["prediction"] = loaded_model.predict(current_data)
     current_data[general_settings.TARGET_COLUMN] = current_dataset[ general_settings.TARGET_COLUMN ].copy()
     
+    reference_data = reference_dataset.head(windown_size).copy()
+    reference_data = data_processing_inference(reference_data)
+
+    reference_data["prediction"] = loaded_model.predict(reference_data)
+    reference_data[general_settings.TARGET_COLUMN] = reference_dataset[ general_settings.TARGET_COLUMN ].copy()
+    
     schema = column_mapping(
         dataframe=current_data,
         target_column=general_settings.TARGET_COLUMN,
@@ -51,7 +57,7 @@ def monitor_model_performance(monitoring: Monitoring = Depends()) -> FileRespons
 
     report_path = build_model_performance_report(
         current_data=current_data,
-        reference_data=current_data,
+        reference_data=reference_data,
         schema=schema,
         report_path=Path.joinpath(report_settings.REPORTS_PATH, report_settings.MODEL_PERFORMANCE_REPORT_NAME)
     )
@@ -74,6 +80,12 @@ def monitor_target_drift(monitoring: Monitoring = Depends()) -> FileResponse:
 
     current_data["prediction"] = loaded_model.predict(current_data)
     current_data[general_settings.TARGET_COLUMN] = current_dataset[ general_settings.TARGET_COLUMN ].copy()
+
+    reference_data = reference_dataset.head(windown_size).copy()
+    reference_data = data_processing_inference(reference_data)
+
+    reference_data["prediction"] = loaded_model.predict(reference_data)
+    reference_data[general_settings.TARGET_COLUMN] = reference_dataset[ general_settings.TARGET_COLUMN ].copy()
     
     schema = column_mapping(
         dataframe=current_data,
@@ -83,7 +95,7 @@ def monitor_target_drift(monitoring: Monitoring = Depends()) -> FileResponse:
 
     report_path = build_target_drift_report(
         current_data=current_data,
-        reference_data=current_data,
+        reference_data=reference_data,
         schema=schema,
         report_path=Path.joinpath(report_settings.REPORTS_PATH, report_settings.TARGET_DRIFT_REPORT_NAME)
     )
@@ -106,6 +118,12 @@ def monitor_data_drift(monitoring: Monitoring = Depends()) -> FileResponse:
 
     current_data["prediction"] = loaded_model.predict(current_data)
     current_data[general_settings.TARGET_COLUMN] = current_dataset[ general_settings.TARGET_COLUMN ].copy()
+
+    reference_data = reference_dataset.head(windown_size).copy()
+    reference_data = data_processing_inference(reference_data)
+
+    reference_data["prediction"] = loaded_model.predict(reference_data)
+    reference_data[general_settings.TARGET_COLUMN] = reference_dataset[ general_settings.TARGET_COLUMN ].copy()
     
     schema = column_mapping(
         dataframe=current_data,
@@ -115,7 +133,7 @@ def monitor_data_drift(monitoring: Monitoring = Depends()) -> FileResponse:
 
     report_path = build_data_drift_report(
         current_data=current_data,
-        reference_data=current_data,
+        reference_data=reference_data,
         schema=schema,
         report_path=Path.joinpath(report_settings.REPORTS_PATH, report_settings.DATA_DRIFT_REPORT_NAME)
     )
@@ -139,6 +157,12 @@ def monitor_data_quality(monitoring: Monitoring = Depends()) -> FileResponse:
     current_data["prediction"] = loaded_model.predict(current_data)
     current_data[general_settings.TARGET_COLUMN] = current_dataset[ general_settings.TARGET_COLUMN ].copy()
 
+    reference_data = reference_dataset.head(windown_size).copy()
+    reference_data = data_processing_inference(reference_data)
+
+    reference_data["prediction"] = loaded_model.predict(reference_data)
+    reference_data[general_settings.TARGET_COLUMN] = reference_dataset[ general_settings.TARGET_COLUMN ].copy()
+
     schema = column_mapping(
         dataframe=current_data,
         target_column=general_settings.TARGET_COLUMN,
@@ -147,7 +171,7 @@ def monitor_data_quality(monitoring: Monitoring = Depends()) -> FileResponse:
 
     report_path = build_data_quality_report(
         current_data=current_data,
-        reference_data=current_data,
+        reference_data=reference_data,
         schema=schema,
         report_path=Path.joinpath(report_settings.REPORTS_PATH, report_settings.DATA_QUALITY_REPORT_NAME)
     )

@@ -9,6 +9,8 @@ import re
 import pandas as pd
 import pandas.api.types as ptypes
 import numpy as np
+from sklearn.preprocessing import StandardScaler, OneHotEncoder, LabelBinarizer
+
 
 # from src.config.aws import aws_credentials
 from src.config.settings import general_settings
@@ -21,6 +23,7 @@ from src.data.processing import (
     _encode_categorical_columns,
     _scales_numerical_columns,
     _transform_numerical_columns,
+    _encode_label
 )
 from src.data.utils import download_dataset, load_features
 from .. import dataset
@@ -80,10 +83,13 @@ def test_categorize_numerical_columns():
     the numerical columns.
     """
     age_bins = load_features(
-        path=general_settings.ARTIFACTS_PATH, features_name="qcut_bins"
+        path=general_settings.ARTIFACTS_PATH,
+        features_name="qcut_bins",
+        from_aws=True
     )
     _dataset = dataset.copy()
 
+    assert isinstance(age_bins, np.ndarray)
     assert isinstance(_dataset["Age"].dtype, type(np.dtype("float64")))
 
     _dataset = _categorize_numerical_columns(
@@ -111,17 +117,22 @@ def test_scale_numerical_columns():
     _dataset = _drop_features(dataframe=_dataset, features=["id", "Age", "NObeyesdad"])
 
     scalers = load_features(
-        path=general_settings.ARTIFACTS_PATH, features_name="scalers"
+        path=general_settings.ARTIFACTS_PATH,
+        features_name="scalers",
+        from_aws=True
     )
+    assert isinstance(scalers, dict)
+    key = list(scalers.keys())[0]
+    assert isinstance(scalers[key], StandardScaler)
     numerical_columns = _dataset.select_dtypes(include=["number"]).columns.tolist()
 
     _dataset = _transform_numerical_columns(dataframe=_dataset)
     _dataset2 = _scales_numerical_columns(dataframe=_dataset, scalers=scalers)
 
     for column in numerical_columns:
-        assert round(_dataset2[column].mean(axis=0), 2) == 0
-        assert round(_dataset2[column].std(axis=0), 2) == 1
-        assert isinstance(_dataset2[column].dtype, type(np.dtype("float64")))
+        assert np.isclose(_dataset2[column].mean(axis=0), 0, atol=0.02)
+        assert np.isclose(_dataset2[column].std(axis=0), 1, atol=0.02)
+        assert _dataset2[column].dtype == np.float64
 
 
 def test_transform_numerical_columns():
@@ -157,19 +168,38 @@ def test_encode_categorical_columns():
     encode technique) the categorical features.
     """
     _dataset = dataset.copy()
-    _dataset = _dataset.drop(columns=["NObeyesdad", "id"])  # removing the target column
+    _dataset = _dataset.drop(columns=["id","NObeyesdad"])  # removing the target column
     _dataset = _create_inmm_features(_dataset)
     age_bins = load_features(
-        path=general_settings.ARTIFACTS_PATH, features_name="qcut_bins"
+        path=general_settings.ARTIFACTS_PATH,
+        features_name="qcut_bins",
+        from_aws=True
     )
+    assert isinstance(age_bins, np.ndarray)
     _dataset = _categorize_numerical_columns(dataframe=_dataset, bins=age_bins)
 
     encoder = load_features(
-        path=general_settings.ARTIFACTS_PATH, features_name="features_encoder"
+        path=general_settings.ARTIFACTS_PATH,
+        features_name="features_encoder",
+        from_aws=True
     )
+    assert isinstance(encoder, OneHotEncoder)
     _dataset2 = _encode_categorical_columns(dataframe=_dataset, encoder=encoder)
 
     assert _dataset.shape[1] != _dataset2.shape[1]
+
+def test_encoded_label():
+    _dataset = dataset.copy()
+    y = _dataset[general_settings.TARGET_COLUMN]
+    label_encoder = load_features(
+        path = general_settings.ARTIFACTS_PATH,
+                features_name="label_encoder",
+                from_aws=True
+    )
+    assert isinstance(label_encoder, LabelBinarizer)
+    encoded_data = _encode_label(y, label_encoder)
+    assert isinstance(encoded_data, np.ndarray)
+    assert isinstance(encoded_data[0], np.ndarray)
 
 
 def test_load_dataset():

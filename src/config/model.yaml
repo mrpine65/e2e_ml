@@ -1,6 +1,6 @@
 FEATURES: ['Gender_Male', 'Age_q3', 'Age_q4', 'FAVC_yes', 'CALC_Sometimes', 'CALC_no', 'Weight', 'FCVC', 'NCP', 'FAF', 'TUE', 'BMI']
 MODEL_NAME: 'lightbgm_cls'
 MODEL_FLAVOR: 'lightgbm'
-RUN_ID: '3faa3a1014f046e2986e818ad12d7a1b'
-EXPERIMENT_ID: '2'
-VERSION: '2'
+RUN_ID: '201ac04cb77f4802b0ac24825d22b921'
+EXPERIMENT_ID: '12'
+VERSION: '6'

@@ -12,63 +12,136 @@ import boto3
 import pandas as pd
 import numpy as np
 from loguru import logger
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.preprocessing import StandardScaler, OneHotEncoder, LabelBinarizer
 
 from ..config.aws import aws_credentials
 from ..config.kaggle import kaggle_credentials
 from ..config.settings import general_settings
-from .utils import load_features
+from .utils import load_features, save_feature
 from ..config.model import model_settings
 
-# warnings.filterwarnings("ignore", category=pd.errors.SettingWithCopyWarning)
+warnings.filterwarnings("ignore")
 
-def data_processing_inference(dataframe: pd.DataFrame) -> pd.DataFrame:
-    """Applies the full data processing pipeline for inference."""
+def data_processing_inference(dataframe: pd.DataFrame, is_train: bool = False) -> pd.DataFrame:
+    """Applies the full data processing pipeline for inference with detailed logging."""
+
+    logger.debug("🔧 Starting `data_processing_inference` function.")
+    logger.info(f"Mode: is_train={is_train}")
 
     # 🧹 Step 1: Data Cleaning
-    logger.info("STEP 1: Data Cleaning - Removing unnecessary columns.")
+    logger.info("Removing columns ['id', 'NObeyesdad'].")
     dataframe = _drop_features(dataframe, ['id', 'NObeyesdad'])
 
     # 🧪 Step 2: Feature Engineering
-    logger.info("STEP 2: Feature Engineering - Creating new derived features.")
     dataframe = _change_height_units(dataframe)
     dataframe = _create_bmi_feature(dataframe)
     dataframe = _create_inmm_features(dataframe)
 
     # 🔄 Step 3: Feature Transformation
-    logger.info("STEP 3: Feature Transformation - Categorizing and transforming numeric columns.")
-    logger.info(f"Loading 'qcut_bins' (Age quantile bins) from {general_settings.ARTIFACTS_PATH}")
+    if is_train:
+        logger.info("computing 'Age' quantile bins using `pd.qcut`.")
+        values, bins = pd.qcut(x=dataframe["Age"], q=4, retbins=True, labels=["q1", "q2", "q3", "q4"])
+        bins = np.concatenate(([-np.inf], bins[1:-1], [np.inf]))
+        save_feature(
+            path=general_settings.ARTIFACTS_PATH,
+            name="qcut_bins",
+            feature=bins,
+            send_to_aws=True
+        )
+
+    logger.info(f"Loading 'qcut_bins' from aws.")
     age_bins = load_features(
         path=general_settings.ARTIFACTS_PATH,
-        features_name="qcut_bins"
+        features_name="qcut_bins",
+        from_aws=True
     )
     dataframe = _categorize_numerical_columns(dataframe, age_bins)
     dataframe = _transform_numerical_columns(dataframe)
 
-    logger.info(f"Loading 'scalers' (StandardScaler objects) from {general_settings.ARTIFACTS_PATH}")
+    if is_train:
+        logger.info("fitting StandardScaler objects for numerical columns.")
+        scalers = {}
+        for col in dataframe.select_dtypes(include=["number"]).columns.to_list():
+            sc = StandardScaler()
+            sc.fit(dataframe[col].to_numpy().reshape(-1, 1))
+            scalers[col] = sc
+        save_feature(
+            path=general_settings.ARTIFACTS_PATH,
+            name="scalers",
+            feature=scalers,
+            send_to_aws=True
+        )
+
+    logger.info(f"Loading 'scalers' from aws")
     scalers = load_features(
         path=general_settings.ARTIFACTS_PATH,
-        features_name='scalers'
+        features_name='scalers',
+        from_aws=True
     )
     dataframe = _scales_numerical_columns(dataframe, scalers)
 
     # 🔠 Step 4: Feature Encoding
-    logger.info("STEP 4: Feature Encoding - Applying OneHotEncoder to categorical columns.")
-    logger.info(f"Loading 'features_encoder' (OneHotEncoder) from {general_settings.ARTIFACTS_PATH}")
+    if is_train:
+        logger.info("Training mode: fitting new OneHotEncoder on categorical columns.")
+        categorical_columns = dataframe.select_dtypes(include=['object', 'category']).columns.to_list()
+        logger.info(f"Categorical columns detected: {categorical_columns}")
+        encoder = OneHotEncoder(
+            drop='first',
+            sparse_output=False,
+            handle_unknown='infrequent_if_exist',
+            min_frequency=20
+        )
+        encoder.fit(dataframe[categorical_columns])
+        save_feature(
+            path=general_settings.ARTIFACTS_PATH,
+            name="features_encoder",
+            feature=encoder,
+            send_to_aws=True
+        )
+
+    logger.info(f"Loading 'features_encoder' from aws.")
     features_encoder = load_features(
         path=general_settings.ARTIFACTS_PATH,
-        features_name='features_encoder'
+        features_name='features_encoder',
+        from_aws=True
     )
     dataframe = _encode_categorical_columns(dataframe, features_encoder)
 
-    # 🎯 Step 5: Feature Selection
-    logger.info("STEP 5: Feature Selection - Keeping only selected model features.")
-    dataframe = dataframe.loc[:, model_settings.FEATURES]
-    logger.info(f"Filtering the feature columns, keeping only {model_settings.FEATURES} columns.")
+    # # 🎯 Step 5: Feature Selection
+    # logger.debug(f"Selecting columns: {model_settings.FEATURES}")
+    # dataframe = dataframe.loc[:, model_settings.FEATURES]
 
     logger.success("✅ Data processing pipeline completed successfully.")
     return dataframe
 
+def label_processing_inference(dataframe: pd.DataFrame, is_train: bool) -> np.ndarray:
+    """Encodes target labels for training or inference with detailed logging."""
+
+    logger.debug("🎯 Starting `label_processing_inference` function.")
+    logger.info(f"Mode: is_train={is_train}")
+
+    if is_train:
+        logger.info("Training mode: fitting new LabelBinarizer on label data.")
+        label_encoder = LabelBinarizer(sparse_output=False)
+        label_encoder.fit(dataframe)
+        save_feature(
+            path=general_settings.ARTIFACTS_PATH,
+            name="label_encoder",
+            feature=label_encoder,
+            send_to_aws=True
+        )
+        logger.info(f"Saved 'label_encoder' to aws.")
+
+    logger.info(f"Loading 'label_encoder' from aws.")
+    label_encoder = load_features(
+        path=general_settings.ARTIFACTS_PATH,
+        features_name='label_encoder',
+        from_aws=True
+    )
+    encoded_data = _encode_label(dataframe, label_encoder)
+
+    logger.success("✅ Label processing pipeline completed successfully.")
+    return encoded_data
 
 def _change_height_units(dataframe: pd.DataFrame) -> pd.DataFrame:
     logger.info("Changing the height units to centimeters.")
@@ -145,6 +218,12 @@ def _drop_features(dataframe: pd.DataFrame, features: List) -> pd.DataFrame:
     logger.info(f"drop fratures {features}")
     dataframe = dataframe.copy()
     return dataframe.drop(columns=features, axis=1, errors='ignore').reset_index(drop=True)
+
+def _encode_label(dataframe: pd.DataFrame, label_encoder:LabelBinarizer) -> np.ndarray:
+    dataframe = dataframe.copy()
+    logger.info(f"Encoding label")
+    encoded_data=label_encoder.transform(dataframe)
+    return encoded_data
 
 
 def load_dataset(path: pathlib.Path, from_aws: bool) -> pd.DataFrame:

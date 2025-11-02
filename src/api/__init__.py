@@ -33,8 +33,25 @@ if not Path.exists(
         file_type="current",
     )
 
+if not Path.exists(
+    Path.joinpath(general_settings.DATA_PATH, general_settings.RAW_FILE_NAME)
+):
+    logger.info(f"Downloading the {general_settings.CURRENT_FILE_NAME} dataset.")
+
+    download_dataset(
+        name="playground-series-s4e2",
+        new_name=general_settings.CURRENT_FILE_NAME,
+        path=general_settings.DATA_PATH,
+        send_to_aws=use_aws,
+        file_type="raw",
+    )
+
 logger.info(f"Loading the {general_settings.CURRENT_FILE_NAME} dataset.")
 current_dataset = load_dataset(
+    path=Path.joinpath(general_settings.DATA_PATH, general_settings.CURRENT_FILE_NAME),
+    from_aws=use_aws,
+)
+reference_dataset= load_dataset(
     path=Path.joinpath(general_settings.DATA_PATH, general_settings.RAW_FILE_NAME),
     from_aws=use_aws,
 )

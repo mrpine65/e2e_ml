@@ -8,11 +8,11 @@ Before downloading the data, you need to do one prerequisite step:
 Finnaly, you can download both current(testing) and (training and validation) using following command:
 
 ```bash
-bash download.sh curent 'raw'
+bash download.sh 'raw'
 ```
 
 ```bash
-bash download.sh curent 'current'
+bash download.sh 'current'
 ```
 
 The dataset will temporarily saved locally (inside the `data` folder) and tranferred to your AWS S3 bucket. After that, the dataset will be deleted. if you choose to not use an AWS S3 Bucket, the the dataset will be stored into the `data` folder.

@@ -16,7 +16,8 @@ from ..config.model import model_settings
 logger.info(f"Loading 'label_encoder' (instance of LabelBinarizer) from path {general_settings.ARTIFACTS_PATH}.")
 label_encoder = load_features(
     path=general_settings.ARTIFACTS_PATH,
-    features_name='label_encoder'
+    features_name='label_encoder',
+    from_aws=True
 )
 
 if aws_credentials.EC2_URL != "YOUR_EC2_INSTANCE_URL":

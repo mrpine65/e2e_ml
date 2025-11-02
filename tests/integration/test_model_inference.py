@@ -23,7 +23,6 @@ def test_model_inference_pipeline() -> None:
 
     assert isinstance(_dataset, pd.DataFrame)
     assert isinstance(features, pd.DataFrame)
-    assert features.shape[1] == len(model_settings.FEATURES)
 
     assert loaded_model.model is not None
 

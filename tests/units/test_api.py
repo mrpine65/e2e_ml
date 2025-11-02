@@ -116,24 +116,24 @@ def test_inference_endpoint() -> None:
     """
     Unit case to test the API's inference endpoint.
     """
-    desired_classes = ["Overweight_Level_I"]
+    desired_classes = ["Insufficient_Weight"]
     desired_keys = ["predictions"]
 
     data = {
-        'Gender': 'Female',
-        'Age': 20.0,
-        'Height': 1.65,
-        'Weight': 65.0,
+        'Gender': 'Male',
+        'Age': 18.128249,
+        'Height': 1.748524,
+        'Weight': 51.552595,
         'family_history_with_overweight': 'yes',
         'FAVC': 'yes',
-        'FCVC': 3.0,
+        'FCVC': 2.919751,
         'NCP': 3.0,
         'CAEC': 'Sometimes',
         'SMOKE': 'no',
-        'CH2O': 3.0,
+        'CH2O': 2.13755,
         'SCC': 'no',
-        'FAF': 1.0,
-        'TUE': 0.0,
+        'FAF': 1.930033,
+        'TUE': 1.0,
         'CALC': 'Sometimes',
         'MTRANS': 'Public_Transportation'
     }

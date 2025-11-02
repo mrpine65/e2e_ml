@@ -19,7 +19,7 @@ function parse_yaml {
 }
 
 # setting important variables
-eval $(parse_yaml ../config/credentials.yaml "CONFIG_")
+eval $(parse_yaml ../src/config/credentials.yaml "CONFIG_")
 
 # defining important variables
 export KAGGLE_USERNAME="$CONFIG_KAGGLE_USERNAME"
@@ -55,10 +55,10 @@ fi
 
 echo "$CONFIG_S3"
 
-if [[ "$CONFIG_S3" != "YOUR_S3_BUCKET_URL" ]]; then
-    # copying the csv file to the s3 bucket
-    aws s3 cp "$file_name" "s3://$CONFIG_S3"
+# if [[ "$CONFIG_S3" != "YOUR_S3_BUCKET_URL" ]]; then
+#     # copying the csv file to the s3 bucket
+#     aws s3 cp "$file_name" "s3://$CONFIG_S3"
 
-    # deleting the create folder
-    rm "$file_name"
-fi
+#     # deleting the create folder
+#     rm "$file_name"
+# fi
