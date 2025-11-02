@@ -1,43 +1,24 @@
 name: Deploy Model to Staging
 
 on:
-  # pull_request:
-  #   types: [closed]
-  workflow_dispatch:  # Enables manual trigger
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # if: github.event.pull_request.merged == true
     steps:
       - name: Check out source code
         uses: actions/checkout@v5.0.0
 
-      - name: Create credentials.yaml from secrets
-        run: |
-          mkdir -p src/config
-          cat > src/config/credentials.yaml <<EOF
-          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
-          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
-          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
-          POSTGRESQL: ${{ secrets.POSTGRESQL }}
-          S3: ${{ secrets.S3 }}
-          EC2_URL: ${{ secrets.EC2_URL }}
-          EOF
-
-      - name: Install dependencies and run commands with uv
-        run: |
-          pip install uv
-          uv sync
-          echo "$PWD/.venv/bin" >> $GITHUB_PATH
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v5.1.0
+      - name: Copy docker-compose.yaml via SCP
+        uses: appleboy/scp-action@v1.0.0
         with:
-          aws-region: us-east-1
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          host: ${{ secrets.HOST }}
+          username: ubuntu
+          port: ${{ secrets.PORT }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          source: "docker-compose.yaml"
+          target: "docker-compose.yaml"
 
       - name: SSH Remote Commands
         uses: appleboy/ssh-action@v1.2.2
@@ -46,5 +27,10 @@ jobs:
           username: ubuntu
           port: ${{ secrets.PORT }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          script: whoami
-          
+          script: |
+
+            # Stop and remove current containers
+            docker compose down
+
+            # Start containers in detached mode
+            docker compose up -d
