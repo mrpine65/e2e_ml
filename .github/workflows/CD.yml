@@ -1,10 +1,10 @@
 name: Deploy Model to Staging
 
 on:  
-  pull_request:
-    types: [closed]
-  workflow_dispatch:                # Enables manual trigger
-  
+  # pull_request:
+  #   types: [closed]
+  workflow_dispatch:  # Enables manual trigger
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Check out source code
         uses: actions/checkout@v5.0.0
-        
+
       - name: Create credentials.yaml from secrets
         run: |
           mkdir -p src/config
@@ -25,14 +25,20 @@ jobs:
           S3: ${{ secrets.S3 }}
           EC2_URL: ${{ secrets.EC2_URL }}
           EOF
-      
-      # # Deploy model to a shadow/canary endpoint  
-      # - name: Deploy Qwak Build
-      #   uses: qwak-ai/deploy-action@v1
-      #   with:
-      #     qwak-api-key: ${{ secrets.QWAK_API_KEY }}
-      #     deploy-type: 'realtime'                # Deploying a real time endpoint
-      #     model-id: ${{ vars.QWAK_MODEL_ID }}    # Qwak Model ID
-      #     build-id: ${{ github.head_ref }}       # Using the branch name as build ID
-      #     param-list: |                                    
-      #       variation-name=shadow,from-file=.config/deploy_conf.yaml
+
+      - name: Install dependencies and run commands with uv
+        run: |
+          pip install uv
+          uv sync
+          echo "$PWD/.venv/bin" >> $GITHUB_PATH
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v5.1.0
+        with:
+          aws-region: us-east-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+
+      - name: Run AWS CLI Comand
+        run: |
+          aws s3 ls
