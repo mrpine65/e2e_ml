@@ -47,16 +47,4 @@ jobs:
           port: ${{ secrets.PORT }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: whoami
-
-      # - name: Create test file
-      #   run: |
-      #     echo "Hello from GitHub Actions" > test-file.txt
-      #     cat test-file.txt
-
-      # - name: Upload test file to S3
-      #   run: |
-      #     aws s3 cp test-file.txt s3://bucket6502-aws/test-file.txt
-
-      # - name: Verify file in S3
-      #   run: |
-      #     aws s3 ls s3://bucket6502-aws/test-file.txt
+          
