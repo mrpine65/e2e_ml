@@ -39,15 +39,24 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
 
-      - name: Create test file
-        run: |
-          echo "Hello from GitHub Actions" > test-file.txt
-          cat test-file.txt
+      - name: SSH Remote Commands
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.HOST }}
+          username: linuxserver.io
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: whoami
 
-      - name: Upload test file to S3
-        run: |
-          aws s3 cp test-file.txt s3://bucket6502-aws/test-file.txt
+      # - name: Create test file
+      #   run: |
+      #     echo "Hello from GitHub Actions" > test-file.txt
+      #     cat test-file.txt
 
-      - name: Verify file in S3
-        run: |
-          aws s3 ls s3://bucket6502-aws/test-file.txt
+      # - name: Upload test file to S3
+      #   run: |
+      #     aws s3 cp test-file.txt s3://bucket6502-aws/test-file.txt
+
+      # - name: Verify file in S3
+      #   run: |
+      #     aws s3 ls s3://bucket6502-aws/test-file.txt
