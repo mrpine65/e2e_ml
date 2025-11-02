@@ -43,4 +43,3 @@ services:
       - ./models:/e2e_ml/models/
       - ./data:/e2e_ml/data/
       - ./reports:/e2e_ml/reports/
-      - ./notebooks/VERSION:/e2e_ml/notebooks/VERSION
