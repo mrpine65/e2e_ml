@@ -43,7 +43,7 @@ jobs:
         uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.HOST }}
-          username: linuxserver.io
+          username: ubuntu
           port: ${{ secrets.PORT }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: whoami
