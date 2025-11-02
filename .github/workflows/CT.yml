@@ -8,8 +8,8 @@ on:
       - completed
 
   # Trigger daily at 12 AM
-  schedule:
-    - cron: "0 0 * * *"
+  # schedule:
+  #   - cron: "0 0 * * *"
   
   # Manual execution trigger
   workflow_dispatch:
@@ -40,6 +40,9 @@ jobs:
         EC2_URL: ${{ secrets.EC2_URL }}
         EOF
 
-    - name: Trigger model training
-      run : |
-        docker build -f Dockerfile.train -t e2e-ml-train .
+    - name: train machine leaning model
+      run: python -m src.train_script.py
+
+    # - name: Trigger model training
+    #   run : |
+    #     docker build -f Dockerfile.train -t e2e-ml-train .
