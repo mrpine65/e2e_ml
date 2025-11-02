@@ -18,7 +18,7 @@ jobs:
           port: ${{ secrets.PORT }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           source: "docker-compose.yaml"
-          target: "/home/ubuntu"
+          target: "/home/ubuntu/deploy_src"
 
       - name: SSH Remote Commands
         uses: appleboy/ssh-action@v1.2.2
@@ -28,6 +28,9 @@ jobs:
           port: ${{ secrets.PORT }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
+            mkdir -p /home/ubuntu/deploy_src/models
+            mkdir -p /home/ubuntu/deploy_src/data
+            mkdir -p /home/ubuntu/deploy_src/reports
 
             # Stop and remove current containers
             docker compose down
