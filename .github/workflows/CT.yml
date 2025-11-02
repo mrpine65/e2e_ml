@@ -1,0 +1,45 @@
+name: Machine Learning Training Workflow
+
+on:
+  # Trigger when the previous workflow (CI) has finished
+  workflow_run:
+    workflows: ["Machine Learning CI Pipeline"]
+    types:
+      - completed
+
+  # Trigger daily at 12 AM
+  schedule:
+    - cron: "0 0 * * *"
+  
+  # Manual execution trigger
+  workflow_dispatch:
+  
+  # Webhook trigger from a monitoring tool
+  # monitoring_webhook:
+  #   types:
+  #     - webhook
+
+jobs:
+  ml-training:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out source code
+      uses: actions/checkout@v5.0.0
+
+    - name: Create credentials.yaml from secrets
+      run: |
+        mkdir -p src/config
+        cat > src/config/credentials.yaml <<EOF
+        KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+        KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+        AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+        AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+        POSTGRESQL: ${{ secrets.POSTGRESQL }}
+        S3: ${{ secrets.S3 }}
+        EC2_URL: ${{ secrets.EC2_URL }}
+        EOF
+
+    - name: Trigger model training
+      run : |
+        docker build -f Dockerfile.train -t e2e-ml-train .

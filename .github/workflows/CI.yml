@@ -1,0 +1,63 @@
+name: Machine Learning CI Pipeline
+
+on:  
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out source code
+      uses: actions/checkout@v5.0.0
+
+    - name: Set up Python
+      uses: actions/setup-python@v6.0.0
+      with:
+        python-version: '3.10'
+
+    - name: Create credentials.yaml from secrets
+      run: |
+        mkdir -p src/config
+        cat > src/config/credentials.yaml <<EOF
+        KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+        KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+        AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+        AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+        POSTGRESQL: ${{ secrets.POSTGRESQL }}
+        S3: ${{ secrets.S3 }}
+        EC2_URL: ${{ secrets.EC2_URL }}
+        EOF
+
+    - name: Install dependencies and run commands with uv
+      run: |
+        pip install uv
+        uv sync
+        echo "$PWD/.venv/bin" >> $GITHUB_PATH
+
+    - name: Run server (background)
+      run: |
+        nohup uvicorn src.api.main:app --host 0.0.0.0 --port 8000 &
+
+    - name: Run tests
+      run: |
+        pytest --cov-report html:reports/cov_html --cov=. tests/ --disable-warnings
+
+    - name: Login to docker registry
+      uses: docker/login-action@v3.6.0
+      with:
+        Username: ${{secrets.DOCKER_USERNAME}}
+        Password: ${{secrets.DOCKER_PASSWORD}}
+
+    - name: Build and push docker image
+      uses: docker/build-push-action@v6.18.0
+      with:
+        context: .
+        file: Dockerfile # path to docker file
+        push: True
+        tags: thong038202008963/my-ml-model:latest
+        
