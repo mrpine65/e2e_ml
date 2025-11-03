@@ -2,10 +2,10 @@ name: Machine Learning Training Workflow
 
 on:
   # Trigger when the previous workflow (CI) has finished
-  # workflow_run:
-  #   workflows: ["Machine Learning CI Pipeline"]
-  #   types:
-  #     - completed
+  workflow_run:
+    workflows: ["Machine Learning CI Pipeline"]
+    types:
+      - completed
 
   # Trigger daily at 12 AM
   # schedule:
