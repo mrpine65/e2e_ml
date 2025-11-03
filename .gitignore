@@ -4,3 +4,4 @@ src/config/credentials.yaml
 __pycache__/
 *.pyc
 
+reports/
