@@ -3,6 +3,7 @@ Creates a Pydantic's base model for the general configuration settings.
 """
 from pathlib import Path
 from pydantic import BaseModel
+import os
 
 from . import read_yaml_credentials_file
 
@@ -27,6 +28,7 @@ general_settings = GeneralSettings(
     )
 )
 
-
-# from pprint import pprint
-# pprint(general_settings)
+os.makedirs(general_settings.DATA_PATH, exist_ok=True)
+os.makedirs(general_settings.ARTIFACTS_PATH, exist_ok=True)
+os.makedirs(general_settings.FEATURES_PATH, exist_ok=True)
+os.makedirs(general_settings.RESEARCH_ENVIRONMENT_PATH, exist_ok=True)

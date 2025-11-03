@@ -360,3 +360,77 @@
  'SCC' 'CALC' 'MTRANS' 'INMM'] columns.
 2025-11-02 23:35:53.111 | SUCCESS  | src.data.processing:data_processing_inference:114 - ✅ Data processing pipeline completed successfully.
 2025-11-02 23:35:53.111 | INFO     | src.model.inference:predict:94 - Prediction: ['Insufficient_Weight'].
+2025-11-03 00:16:38.716 | DEBUG    | src.data.processing:data_processing_inference:28 - 🔧 Starting `data_processing_inference` function.
+2025-11-03 00:16:38.717 | INFO     | src.data.processing:data_processing_inference:29 - Mode: is_train=False
+2025-11-03 00:16:38.717 | INFO     | src.data.processing:data_processing_inference:32 - Removing columns ['id', 'NObeyesdad'].
+2025-11-03 00:16:38.717 | INFO     | src.data.processing:_drop_features:218 - drop fratures ['id', 'NObeyesdad']
+2025-11-03 00:16:38.726 | INFO     | src.data.processing:_change_height_units:147 - Changing the height units to centimeters.
+2025-11-03 00:16:38.729 | INFO     | src.data.processing:_create_bmi_feature:154 - Creating a new column for the BMI (Body Mass Index) values from data samples.
+2025-11-03 00:16:38.736 | INFO     | src.data.processing:_create_inmm_features:161 - Creating a new column for the INMM (Ideal Number of Main Meals?) values from data sample.
+2025-11-03 00:16:38.740 | INFO     | src.data.processing:data_processing_inference:52 - Loading 'qcut_bins' from aws.
+2025-11-03 00:16:40.311 | INFO     | src.data.processing:_categorize_numerical_columns:180 - Categorizing the 'Age' column into discrete categories.
+2025-11-03 00:16:40.327 | INFO     | src.data.processing:_transform_numerical_columns:170 - Transforming (Log + 1 transformation) to the ['Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE', 'BMI'] columns.
+2025-11-03 00:16:40.331 | INFO     | src.data.processing:data_processing_inference:75 - Loading 'scalers' from aws
+2025-11-03 00:16:41.788 | INFO     | src.data.processing:_scales_numerical_columns:193 - Scaling the ['Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE', 'BMI'] columns.
+2025-11-03 00:16:41.796 | INFO     | src.data.processing:data_processing_inference:102 - Loading 'features_encoder' from aws.
+2025-11-03 00:16:43.702 | INFO     | src.data.processing:_encode_categorical_columns:205 - Encoding the ['Gender' 'Age' 'family_history_with_overweight' 'FAVC' 'CAEC' 'SMOKE'
+ 'SCC' 'CALC' 'MTRANS' 'INMM'] columns.
+2025-11-03 00:16:43.776 | SUCCESS  | src.data.processing:data_processing_inference:114 - ✅ Data processing pipeline completed successfully.
+2025-11-03 00:16:43.782 | DEBUG    | src.data.processing:data_processing_inference:28 - 🔧 Starting `data_processing_inference` function.
+2025-11-03 00:16:43.782 | INFO     | src.data.processing:data_processing_inference:29 - Mode: is_train=False
+2025-11-03 00:16:43.782 | INFO     | src.data.processing:data_processing_inference:32 - Removing columns ['id', 'NObeyesdad'].
+2025-11-03 00:16:43.782 | INFO     | src.data.processing:_drop_features:218 - drop fratures ['id', 'NObeyesdad']
+2025-11-03 00:16:43.786 | INFO     | src.data.processing:_change_height_units:147 - Changing the height units to centimeters.
+2025-11-03 00:16:43.789 | INFO     | src.data.processing:_create_bmi_feature:154 - Creating a new column for the BMI (Body Mass Index) values from data samples.
+2025-11-03 00:16:43.791 | INFO     | src.data.processing:_create_inmm_features:161 - Creating a new column for the INMM (Ideal Number of Main Meals?) values from data sample.
+2025-11-03 00:16:43.795 | INFO     | src.data.processing:data_processing_inference:52 - Loading 'qcut_bins' from aws.
+2025-11-03 00:16:45.329 | INFO     | src.data.processing:_categorize_numerical_columns:180 - Categorizing the 'Age' column into discrete categories.
+2025-11-03 00:16:45.343 | INFO     | src.data.processing:_transform_numerical_columns:170 - Transforming (Log + 1 transformation) to the ['Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE', 'BMI'] columns.
+2025-11-03 00:16:45.349 | INFO     | src.data.processing:data_processing_inference:75 - Loading 'scalers' from aws
+2025-11-03 00:16:46.829 | INFO     | src.data.processing:_scales_numerical_columns:193 - Scaling the ['Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE', 'BMI'] columns.
+2025-11-03 00:16:46.836 | INFO     | src.data.processing:data_processing_inference:102 - Loading 'features_encoder' from aws.
+2025-11-03 00:16:48.469 | INFO     | src.data.processing:_encode_categorical_columns:205 - Encoding the ['Gender' 'Age' 'family_history_with_overweight' 'FAVC' 'CAEC' 'SMOKE'
+ 'SCC' 'CALC' 'MTRANS' 'INMM'] columns.
+2025-11-03 00:16:48.542 | SUCCESS  | src.data.processing:data_processing_inference:114 - ✅ Data processing pipeline completed successfully.
+2025-11-03 00:16:48.741 | INFO     | src.model.inference:predict:94 - Prediction: [6 1 0 ... 2 6 3].
+2025-11-03 00:16:48.987 | INFO     | src.model.inference:predict:94 - Prediction: ['Overweight_Level_II' 'Normal_Weight' 'Insufficient_Weight' ...
+ 'Obesity_Type_I' 'Overweight_Level_II' 'Obesity_Type_II'].
+2025-11-03 00:17:55.997 | INFO     | src.data.processing:_change_height_units:147 - Changing the height units to centimeters.
+2025-11-03 00:17:56.011 | INFO     | src.data.processing:_create_bmi_feature:154 - Creating a new column for the BMI (Body Mass Index) values from data samples.
+2025-11-03 00:17:56.024 | INFO     | src.data.processing:_create_inmm_features:161 - Creating a new column for the INMM (Ideal Number of Main Meals?) values from data sample.
+2025-11-03 00:17:57.599 | INFO     | src.data.processing:_categorize_numerical_columns:180 - Categorizing the 'Age' column into discrete categories.
+2025-11-03 00:17:57.617 | INFO     | src.data.processing:_change_height_units:147 - Changing the height units to centimeters.
+2025-11-03 00:17:57.620 | INFO     | src.data.processing:_create_bmi_feature:154 - Creating a new column for the BMI (Body Mass Index) values from data samples.
+2025-11-03 00:17:57.623 | INFO     | src.data.processing:_create_inmm_features:161 - Creating a new column for the INMM (Ideal Number of Main Meals?) values from data sample.
+2025-11-03 00:17:57.628 | INFO     | src.data.processing:_drop_features:218 - drop fratures ['id', 'Age', 'NObeyesdad']
+2025-11-03 00:17:59.827 | INFO     | src.data.processing:_transform_numerical_columns:170 - Transforming (Log + 1 transformation) to the ['Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE', 'BMI'] columns.
+2025-11-03 00:17:59.841 | INFO     | src.data.processing:_scales_numerical_columns:193 - Scaling the ['Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE', 'BMI'] columns.
+2025-11-03 00:17:59.856 | INFO     | src.data.processing:_change_height_units:147 - Changing the height units to centimeters.
+2025-11-03 00:17:59.859 | INFO     | src.data.processing:_create_bmi_feature:154 - Creating a new column for the BMI (Body Mass Index) values from data samples.
+2025-11-03 00:17:59.862 | INFO     | src.data.processing:_create_inmm_features:161 - Creating a new column for the INMM (Ideal Number of Main Meals?) values from data sample.
+2025-11-03 00:17:59.868 | INFO     | src.data.processing:_drop_features:218 - drop fratures ['id', 'Age', 'NObeyesdad']
+2025-11-03 00:17:59.878 | INFO     | src.data.processing:_transform_numerical_columns:170 - Transforming (Log + 1 transformation) to the ['Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE', 'BMI'] columns.
+2025-11-03 00:17:59.902 | INFO     | src.data.processing:_create_inmm_features:161 - Creating a new column for the INMM (Ideal Number of Main Meals?) values from data sample.
+2025-11-03 00:18:01.396 | INFO     | src.data.processing:_categorize_numerical_columns:180 - Categorizing the 'Age' column into discrete categories.
+2025-11-03 00:18:02.991 | INFO     | src.data.processing:_encode_categorical_columns:205 - Encoding the ['Gender' 'Age' 'family_history_with_overweight' 'FAVC' 'CAEC' 'SMOKE'
+ 'SCC' 'CALC' 'MTRANS' 'INMM'] columns.
+2025-11-03 00:18:04.528 | INFO     | src.data.processing:_encode_label:224 - Encoding label
+2025-11-03 00:18:04.560 | INFO     | src.data.utils:download_dataset:106 - Downloading dataset aravindpcoder/obesity-or-cvd-risk-classifyregressorcluster and saving into the folder D:\My_project\e2e_ml\data.
+2025-11-03 00:18:08.212 | INFO     | src.data.utils:download_dataset:106 - Downloading dataset playground-series-s4e2 and saving into the folder D:\My_project\e2e_ml\data.
+2025-11-03 00:18:11.600 | DEBUG    | src.data.processing:data_processing_inference:28 - 🔧 Starting `data_processing_inference` function.
+2025-11-03 00:18:11.600 | INFO     | src.data.processing:data_processing_inference:29 - Mode: is_train=False
+2025-11-03 00:18:11.600 | INFO     | src.data.processing:data_processing_inference:32 - Removing columns ['id', 'NObeyesdad'].
+2025-11-03 00:18:11.600 | INFO     | src.data.processing:_drop_features:218 - drop fratures ['id', 'NObeyesdad']
+2025-11-03 00:18:11.601 | INFO     | src.data.processing:_change_height_units:147 - Changing the height units to centimeters.
+2025-11-03 00:18:11.602 | INFO     | src.data.processing:_create_bmi_feature:154 - Creating a new column for the BMI (Body Mass Index) values from data samples.
+2025-11-03 00:18:11.602 | INFO     | src.data.processing:_create_inmm_features:161 - Creating a new column for the INMM (Ideal Number of Main Meals?) values from data sample.
+2025-11-03 00:18:11.604 | INFO     | src.data.processing:data_processing_inference:52 - Loading 'qcut_bins' from aws.
+2025-11-03 00:18:13.058 | INFO     | src.data.processing:_categorize_numerical_columns:180 - Categorizing the 'Age' column into discrete categories.
+2025-11-03 00:18:13.064 | INFO     | src.data.processing:_transform_numerical_columns:170 - Transforming (Log + 1 transformation) to the ['Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE', 'BMI'] columns.
+2025-11-03 00:18:13.072 | INFO     | src.data.processing:data_processing_inference:75 - Loading 'scalers' from aws
+2025-11-03 00:18:14.649 | INFO     | src.data.processing:_scales_numerical_columns:193 - Scaling the ['Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE', 'BMI'] columns.
+2025-11-03 00:18:14.653 | INFO     | src.data.processing:data_processing_inference:102 - Loading 'features_encoder' from aws.
+2025-11-03 00:18:16.176 | INFO     | src.data.processing:_encode_categorical_columns:205 - Encoding the ['Gender' 'Age' 'family_history_with_overweight' 'FAVC' 'CAEC' 'SMOKE'
+ 'SCC' 'CALC' 'MTRANS' 'INMM'] columns.
+2025-11-03 00:18:16.182 | SUCCESS  | src.data.processing:data_processing_inference:114 - ✅ Data processing pipeline completed successfully.
+2025-11-03 00:18:16.186 | INFO     | src.model.inference:predict:94 - Prediction: ['Insufficient_Weight'].
