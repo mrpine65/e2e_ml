@@ -3,7 +3,7 @@ name: Deploy Model to Staging
 on:
   workflow_dispatch:
   workflow_run:
-    workflows: ["Machine Learning CI Pipeline"]
+    workflows: ["Machine Learning Training Workflow"]
     types:
       - completed
 
