@@ -47,7 +47,7 @@ jobs:
         echo "$PWD/.venv/bin" >> $GITHUB_PATH
 
     - name: train machine leaning model
-      run: python -m src.train_script.py
+      run: python -m src.train_script
 
     # - name: Trigger model training
     #   run : |
