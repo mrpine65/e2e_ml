@@ -16,12 +16,13 @@ class ModelSettings(BaseModel):
         BaseModel (pydantic.BaseModel): Pydantic base model instance.
     """
 
+    # EXPERIMENT_ID: str
+    # RUN_ID: str
+    # FEATURES: List[str]
     MODEL_NAME: str
     VERSION: str
     MODEL_FLAVOR: str
-    EXPERIMENT_ID: str
-    RUN_ID: str
-    FEATURES: List[str]
+    ALIAS: str
 
 
 model_settings = ModelSettings(

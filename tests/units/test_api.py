@@ -24,9 +24,7 @@ def test_version_endpoint() -> None:
     assert response.status_code == 200
     assert isinstance(content, Dict)
     assert all(dk in content.keys() for dk in desired_keys)
-    assert model_settings.VERSION == content[desired_keys[0]]
     assert CODE_VERSION == content[desired_keys[1]]
-
 
 def test_model_performance_report_endpoint() -> None:
     """

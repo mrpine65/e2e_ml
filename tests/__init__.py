@@ -38,5 +38,6 @@ loaded_model = ModelServe(
     model_name=model_settings.MODEL_NAME,
     model_flavor=model_settings.MODEL_FLAVOR,
     model_version=model_settings.VERSION,
+    model_alias=model_settings.ALIAS
 )
-loaded_model.load()
+loaded_model.load_with_version()

@@ -38,12 +38,13 @@ def test_model_file() -> None:
     Unit case to test the function responsible for reading an YAML
     file and the content of the 'model' file.
     """
+    # assert isinstance(model_settings.EXPERIMENT_ID, str)
+    # assert isinstance(model_settings.RUN_ID, str)
+    # assert isinstance(model_settings.FEATURES, List)
     assert isinstance(model_settings.MODEL_NAME, str)
     assert isinstance(model_settings.MODEL_FLAVOR, str)
-    assert isinstance(model_settings.EXPERIMENT_ID, str)
     assert isinstance(model_settings.VERSION, str)
-    assert isinstance(model_settings.RUN_ID, str)
-    assert isinstance(model_settings.FEATURES, List)
+    assert isinstance(model_settings.ALIAS, str)
 
 
 def test_settings_file() -> None:

@@ -10,7 +10,6 @@ from loguru import logger
 from ..config.aws import aws_credentials
 from ..config.settings import general_settings
 from ..data.utils import load_features
-from ..data.processing import data_processing_inference
 from ..config.model import model_settings
 
 logger.info(f"Loading 'label_encoder' (instance of LabelBinarizer) from path {general_settings.ARTIFACTS_PATH}.")
@@ -33,6 +32,7 @@ class ModelServe:
         model_name: str,
         model_flavor: str,
         model_version: str,
+        model_alias: str
     ) -> None:
         """Model's instance initializer.
 
@@ -44,20 +44,21 @@ class ModelServe:
         self.model_name = model_name
         self.model_flavor = model_flavor
         self.model_version = model_version
+        self.model_alias = model_alias
         self.model = None
 
     @logger.catch
-    def load(self) -> None:
+    def load_with_version(self) -> None:
         """Loads the trained model.
 
         Raises:
             NotImplementedError: raises NotImplementedError if the model's flavor value.
         """
-        logger.info(
-            f"Loading the model {model_settings.MODEL_NAME} with version {model_settings.VERSION}."
-        )
 
-        model_uri = f"models:/{model_settings.MODEL_NAME}/{model_settings.VERSION}"
+        logger.info(
+            f"Loading the model {self.model_name} with version {self.model_version}."
+        )
+        model_uri = f"models:/{self.model_name}/{self.model_version}"
 
         if self.model_flavor == "lightgbm":
             self.model = mlflow.lightgbm.load_model(model_uri)
@@ -69,9 +70,46 @@ class ModelServe:
             self.model = mlflow.catboost.load_model(model_uri)
         else:
             logger.critical(
-                f"Couldn't load the model using the flavor {model_settings.MODEL_FLAVOR}."
+                f"Couldn't load the model using the flavor {self.model_flavor}."
             )
             raise NotImplementedError()
+
+    @logger.catch
+    def load_with_alias(self) -> None:
+        """Loads the trained model.
+
+        Raises:
+            NotImplementedError: raises NotImplementedError if the model's flavor value.
+        """
+
+        logger.info(
+            f"Loading the model {self.model_name} with alias {self.model_alias}."
+        )
+        model_uri = f"models:/{self.model_name}@{self.model_alias}"
+
+        if self.model_flavor == "lightgbm":
+            self.model = mlflow.lightgbm.load_model(model_uri)
+        elif self.model_flavor == "sklearn":
+            self.model = mlflow.sklearn.load_model(model_uri)
+        elif self.model_flavor == "xgboost":
+            self.model = mlflow.xgboost.load_model(model_uri)
+        elif self.model_flavor == "catboost":
+            self.model = mlflow.catboost.load_model(model_uri)
+        else:
+            logger.critical(
+                f"Couldn't load the model using the flavor {self.model_flavor}."
+            )
+            raise NotImplementedError()
+
+    def get_model_version_with_alias(self) -> str:
+        """
+        Get version of a registered model using its alias.
+
+        Returns:
+            str: Model version corresponding to the alias.
+        """
+        model_version = mlflow.MlflowClient().get_model_version_by_alias(model_settings.MODEL_NAME, model_settings.ALIAS).version
+        return model_version
 
     def predict(
         self, features: pd.DataFrame, transform_to_str: bool = True

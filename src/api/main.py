@@ -7,6 +7,7 @@ from pathlib import Path
 from loguru import logger
 from typing import Dict
 import pandas as pd
+from mlflow import MlflowClient
 from fastapi import FastAPI, Depends
 from fastapi.responses import FileResponse
 
@@ -23,7 +24,7 @@ from ..config.settings import general_settings
 from ..schema.person import Person
 from ..schema.monitoring import Monitoring
 from ..data.processing import data_processing_inference
-from . import current_dataset,reference_dataset ,loaded_model
+from . import current_dataset,reference_dataset ,loaded_model, current_model_version
 
 app = FastAPI()
 
@@ -191,7 +192,8 @@ def check_versions() -> Dict:
 
     return {
         "code_version": code_version,
-        "model_version": model_settings.VERSION
+        "model_version": current_model_version
+
     }
 
 

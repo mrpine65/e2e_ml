@@ -61,8 +61,10 @@ loaded_model = ModelServe(
     model_name=model_settings.MODEL_NAME,
     model_flavor=model_settings.MODEL_FLAVOR,
     model_version=model_settings.VERSION,
+    model_alias=model_settings.ALIAS
 )
-loaded_model.load()
+loaded_model.load_with_alias()
+current_model_version = loaded_model.get_model_version_with_alias()
 
 # logger.info("Loading the reference data and filtering its columns.")
 # reference_data = load_dataset(
