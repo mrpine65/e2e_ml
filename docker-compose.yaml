@@ -42,4 +42,8 @@ services:
     volumes:
       - ./models:/e2e_ml/models/
       - ./data:/e2e_ml/data/
+<<<<<<< HEAD
       - ./reports:/e2e_ml/reports/
+=======
+      - ./reports:/e2e_ml/reports/
+>>>>>>> b589959aa9c3b473470bcef0a14108211610234f

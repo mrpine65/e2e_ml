@@ -36,6 +36,7 @@ def load_features(
     Returns:
         The loaded feature object (NumPy array or Scikit-learn transformer).
     """
+    os.makedirs(path, exist_ok=True)
     if not from_aws:
         with open(pathlib.Path.joinpath(path, f"{features_name}.pkl"), "rb") as f:
             loaded = pickle.load(f)
@@ -159,3 +160,4 @@ def send_to_s3(
     )
 
     os.remove(pathlib.Path.joinpath(file_path, file_name))
+

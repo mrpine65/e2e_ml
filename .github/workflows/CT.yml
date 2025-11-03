@@ -2,14 +2,14 @@ name: Machine Learning Training Workflow
 
 on:
   # Trigger when the previous workflow (CI) has finished
-  workflow_run:
-    workflows: ["Machine Learning CI Pipeline"]
-    types:
-      - completed
+  # workflow_run:
+  #   workflows: ["Machine Learning CI Pipeline"]
+  #   types:
+  #     - completed
 
   # Trigger daily at 12 AM
-  schedule:
-    - cron: "0 0 * * *"
+  # schedule:
+  #   - cron: "0 0 * * *"
   
   # Manual execution trigger
   workflow_dispatch:
@@ -40,6 +40,15 @@ jobs:
         EC2_URL: ${{ secrets.EC2_URL }}
         EOF
 
-    - name: Trigger model training
-      run : |
-        docker build -f Dockerfile.train -t e2e-ml-train .
+    - name: Install dependencies and run commands with uv
+      run: |
+        pip install uv
+        uv sync
+        echo "$PWD/.venv/bin" >> $GITHUB_PATH
+
+    - name: train machine leaning model
+      run: python -m src.train_script.py
+
+    # - name: Trigger model training
+    #   run : |
+    #     docker build -f Dockerfile.train -t e2e-ml-train .

@@ -1,0 +1,36 @@
+name: Deploy Model to Staging
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v5.0.0
+
+      - name: Copy docker-compose.yaml via SCP
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ubuntu
+          port: ${{ secrets.PORT }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          source: "docker-compose.yaml"
+          target: "~/deploy_src"
+
+      - name: SSH Remote Commands
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.HOST }}
+          username: ubuntu
+          port: ${{ secrets.PORT }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          script: |
+            mkdir -p ~/deploy_src/models
+            mkdir -p ~/deploy_src/data
+            mkdir -p ~/deploy_src/reports
+            cd ~/deploy_src
+            docker compose down
+            docker compose up -d
