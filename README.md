@@ -115,7 +115,7 @@ e2e_ml/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/e2e_ml.git
+git clone https://github.com/mrpine65/e2e_ml.git
 cd e2e_ml
 ```
 
