@@ -251,26 +251,26 @@ The project uses [Evidently](https://www.evidentlyai.com/) for comprehensive mon
 
 ### Model Performance
 <div align="center">
-  <img src="./images/model_performance.png" alt="Model Performance" width="70%">
+  <img src="./images/model_performance.png" alt="Model Performance" width="70%"><br/>
   <figcaption style="font-style:italic; color:gray;">Demo report: Model Performance Visualization</figcaption>
 </div>
 
 
 ### Data Drift
 <div align="center">
-  <img src="./images/data_drift.png" alt="Model Performance" width="70%">
+  <img src="./images/data_drift.png" alt="Model Performance" width="70%"><br/>
   <figcaption style="font-style:italic; color:gray;">Demo report: Data Drift Visualization</figcaption>
 </div>
 
 ### Target Drift
 <div align="center">
-  <img src="./images/target_drift.png" alt="Model Performance" width="70%">
+  <img src="./images/target_drift.png" alt="Model Performance" width="70%"><br/>
   <figcaption style="font-style:italic; color:gray;">Demo report: Target Drift Visualization</figcaption>
 </div>
 
 ### Data Quality
 <div align="center">
-  <img src="./images/data_quality.png" alt="Model Performance" width="70%">
+  <img src="./images/data_quality.png" alt="Model Performance" width="70%"><br/>
   <figcaption style="font-style:italic; color:gray;">Demo report: Data Quality Visualization</figcaption>
 </div>
 
