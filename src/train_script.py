@@ -7,6 +7,7 @@ import mlflow
 import numpy as np
 import optuna
 import pandas as pd
+from datetime import datetime, timezone
 from catboost import CatBoostClassifier
 from lightgbm import LGBMClassifier
 from mlflow.models import infer_signature
@@ -176,9 +177,7 @@ class Objective:
                 }
                 model = CatBoostClassifier(**params)
 
-            # ----------------------------------------------------------
-            # Model Training
-            # ----------------------------------------------------------
+
             model.fit(X=self.X_train, y=self.y_train)
 
             # Training F1
@@ -217,10 +216,6 @@ class Objective:
 
         return valid_f1
 
-
-# ---------------------------------------------------------------------
-# Prepare Data
-# ---------------------------------------------------------------------
 pipeline = DataPipeline(
     dataset_name="playground-series-s4e2",
     raw_name=general_settings.RAW_FILE_NAME,
@@ -230,12 +225,10 @@ pipeline = DataPipeline(
 
 X_train, X_val, y_train, y_val = pipeline.prepare_data()
 
-# ---------------------------------------------------------------------
-# Experiment Setup and Execution
-# ---------------------------------------------------------------------
-now = datetime.now()
-formatted_time = now.strftime("%d:%m:%Y %H:%M:%S")
-experiment_id = mlflow.create_experiment(name=str(formatted_time))
+now = datetime.now(timezone.utc)
+formatted_time = now.strftime("%Y-%m-%d_%H-%M-%S_UTC")
+experiment_name = f"obesity_classification_{formatted_time}"
+experiment_id = mlflow.create_experiment(name=experiment_name)
 
 for run_name in ["lightgbm", "decision_tree", "random_forest", "xgboost", "catboost"]:
     with mlflow.start_run(experiment_id=experiment_id, run_name=run_name):

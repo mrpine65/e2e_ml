@@ -1,26 +1,30 @@
 services:
-  # dev:
-  #   build:
-  #     context: .
-  #     dockerfile: ./notebooks/Dockerfile.dev
+  dev:
+    image: thong038202008963/repo:latest
 
-  #   depends_on:
-  #     - mlflow
+    build:
+      context: .
+      dockerfile: Dockerfile
 
-  #   command: ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--NotebookApp.token=''"]
+    depends_on:
+      - mlflow
 
-  #   ports:
-  #     - "8888:8888"
+    command: ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--NotebookApp.token=''"]
 
-  #   volumes:
-  #     - ./src/config/:/e2e_ml/src/config/
-  #     - ./models:/e2e_ml/models/
-  #     - ./data:/e2e_ml/data/
+    ports:
+      - "8888:8888"
+
+    volumes:
+      - ./src/config/:/e2e_ml/src/config/
+      - ./models:/e2e_ml/models/
+      - ./data:/e2e_ml/data/
 
   # mlflow:
+  #   image: thong038202008963/repo:latest
+
   #   build:
   #     context: .
-  #     dockerfile: ./notebooks/Dockerfile.dev
+  #     dockerfile: Dockerfile
   #   command: ["mlflow", "server", "-h", "0.0.0.0", "-p", "5000"]
 
   #   ports:
@@ -33,6 +37,10 @@ services:
 
   prod:
     image: thong038202008963/repo:latest
+
+    build:
+      context: .
+      dockerfile: Dockerfile
     
     command: ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
