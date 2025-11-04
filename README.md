@@ -55,7 +55,7 @@ Multi-class classification of obesity levels using personal health and lifestyle
 - **Programming Language:** Python 3  
 - **Project Template:** Cookiecutter  
 - **Testing:** PyTest  
-- **Virtual Environment:** Conda, Pip  
+- **Virtual Environment:** uv
 
 
 ## 📁 Project Structure
@@ -369,10 +369,6 @@ uv add --dev package-name
 # Update all dependencies
 uv sync --upgrade
 ```
-
-## 📝 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 🤝 Contributing
 
