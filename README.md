@@ -1,6 +1,6 @@
 # End-to-End Machine Learning Project: Obesity Classification
 
-[![CI/CD Pipeline](https://github.com/yourusername/e2e_ml/actions/workflows/CI.yml/badge.svg)](https://github.com/yourusername/e2e_ml/actions)
+[![CI/CD Pipeline](https://github.com/mrpine65/e2e_ml/actions/workflows/CI.yml/badge.svg)](https://github.com/mrpine65/e2e_ml/actions)
 
 An end-to-end MLOps project for obesity level classification using personal health data. This project demonstrates a complete machine learning pipeline with automated training, deployment, and monitoring capabilities.
 
